@@ -16,3 +16,6 @@ export * from './types/index'
 
 // Widgets are exported individually from their directories
 // e.g., import { MapView } from 'mcp-widgets/widgets/map'
+
+// Loaders are distributed via CDN only (cdn/loaders/*.js)
+// They're browser-only and designed to be loaded via script tags

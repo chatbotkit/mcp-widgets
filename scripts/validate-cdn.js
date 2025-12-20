@@ -10,6 +10,7 @@
  * 3. Manifest files exist and contain valid JSON
  * 4. Manifests have required fields
  * 5. Custom element registration code is present
+ * 6. Loader files are valid JavaScript
  */
 
 import fs from 'node:fs/promises'
@@ -18,6 +19,8 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CDN_DIR = path.join(__dirname, '..', 'cdn')
+const WIDGETS_CDN_DIR = path.join(CDN_DIR, 'widgets')
+const LOADERS_CDN_DIR = path.join(CDN_DIR, 'loaders')
 
 /** Required fields in manifest */
 const REQUIRED_MANIFEST_FIELDS = [
@@ -32,6 +35,9 @@ const REQUIRED_MANIFEST_FIELDS = [
 
 /** Expected widgets to validate */
 const EXPECTED_WIDGETS = ['data-card', 'rich-data-card']
+
+/** Expected loaders to validate */
+const EXPECTED_LOADERS = ['openai']
 
 let hasErrors = false
 
@@ -64,7 +70,7 @@ async function fileExists(filePath) {
  * Validate a JavaScript bundle
  */
 async function validateBundle(widgetName) {
-  const bundlePath = path.join(CDN_DIR, `${widgetName}.js`)
+  const bundlePath = path.join(WIDGETS_CDN_DIR, `${widgetName}.js`)
 
   // Check file exists
   if (!(await fileExists(bundlePath))) {
@@ -109,7 +115,7 @@ async function validateBundle(widgetName) {
  * Validate a manifest file
  */
 async function validateManifest(widgetName) {
-  const manifestPath = path.join(CDN_DIR, `${widgetName}.manifest.json`)
+  const manifestPath = path.join(WIDGETS_CDN_DIR, `${widgetName}.manifest.json`)
 
   // Check file exists
   if (!(await fileExists(manifestPath))) {
@@ -161,6 +167,52 @@ async function validateManifest(widgetName) {
 }
 
 /**
+ * Validate a loader file
+ */
+async function validateLoader(loaderName) {
+  const loaderPath = path.join(LOADERS_CDN_DIR, `${loaderName}.js`)
+
+  // Check file exists
+  if (!(await fileExists(loaderPath))) {
+    logError(`Loader not found: loaders/${loaderName}.js`)
+    return false
+  }
+
+  const content = await fs.readFile(loaderPath, 'utf8')
+  const stats = await fs.stat(loaderPath)
+
+  // Check file is not empty
+  if (content.length === 0) {
+    logError(`Loader is empty: loaders/${loaderName}.js`)
+    return false
+  }
+
+  // Check it's valid JavaScript
+  try {
+    // eslint-disable-next-line no-new-func
+    new Function(content)
+    logSuccess(
+      `Loader is valid JS: loaders/${loaderName}.js (${formatSize(stats.size)})`
+    )
+  } catch (err) {
+    logError(
+      `Loader has syntax errors: loaders/${loaderName}.js - ${err.message}`
+    )
+    return false
+  }
+
+  // Check for MCPWidgets global
+  if (!content.includes('MCPWidgets')) {
+    logError(
+      `Loader may not expose MCPWidgets global: loaders/${loaderName}.js`
+    )
+    return false
+  }
+
+  return true
+}
+
+/**
  * Format file size
  */
 function formatSize(bytes) {
@@ -170,21 +222,45 @@ function formatSize(bytes) {
 }
 
 /**
- * Check for unexpected files in CDN directory
+ * Check for expected directory structure
  */
-async function checkForUnexpectedFiles() {
-  const files = await fs.readdir(CDN_DIR)
+async function checkDirectoryStructure() {
+  // Check widgets directory
+  if (!(await fileExists(WIDGETS_CDN_DIR))) {
+    logError('cdn/widgets/ directory not found')
+    return
+  }
 
-  const expectedFiles = new Set([
-    'test.html', // Test file is optional
+  const widgetFiles = await fs.readdir(WIDGETS_CDN_DIR)
+  const expectedWidgetFiles = new Set([
     ...EXPECTED_WIDGETS.map((w) => `${w}.js`),
     ...EXPECTED_WIDGETS.map((w) => `${w}.manifest.json`),
   ])
 
-  const unexpected = files.filter((f) => !expectedFiles.has(f))
-  if (unexpected.length > 0) {
-    logInfo(`Unexpected files in cdn/: ${unexpected.join(', ')}`)
+  const unexpectedWidgets = widgetFiles.filter(
+    (f) => !expectedWidgetFiles.has(f)
+  )
+  if (unexpectedWidgets.length > 0) {
+    logInfo(`Extra files in cdn/widgets/: ${unexpectedWidgets.join(', ')}`)
   }
+
+  // Check loaders directory
+  if (!(await fileExists(LOADERS_CDN_DIR))) {
+    logError('cdn/loaders/ directory not found')
+    return
+  }
+
+  const loaderFiles = await fs.readdir(LOADERS_CDN_DIR)
+  const expectedLoaderFiles = new Set(EXPECTED_LOADERS.map((l) => `${l}.js`))
+
+  const unexpectedLoaders = loaderFiles.filter(
+    (f) => !expectedLoaderFiles.has(f)
+  )
+  if (unexpectedLoaders.length > 0) {
+    logInfo(`Extra files in cdn/loaders/: ${unexpectedLoaders.join(', ')}`)
+  }
+
+  logSuccess('Directory structure is correct')
 }
 
 /**
@@ -201,14 +277,20 @@ async function main() {
 
   // Validate each widget
   for (const widget of EXPECTED_WIDGETS) {
-    console.log(`\n📦 ${widget}:`)
+    console.log(`\n📦 Widget: ${widget}`)
     await validateBundle(widget)
     await validateManifest(widget)
   }
 
-  // Check for unexpected files
-  console.log('\n📁 Directory check:')
-  await checkForUnexpectedFiles()
+  // Validate each loader
+  for (const loader of EXPECTED_LOADERS) {
+    console.log(`\n🔌 Loader: ${loader}`)
+    await validateLoader(loader)
+  }
+
+  // Check directory structure
+  console.log('\n📁 Directory structure:')
+  await checkDirectoryStructure()
 
   // Summary
   console.log('\n' + '─'.repeat(50))

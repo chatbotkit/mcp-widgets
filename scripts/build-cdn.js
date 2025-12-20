@@ -2,15 +2,19 @@
  * CDN Build Script
  *
  * This script builds each widget in src/widgets into a self-contained IIFE
- * bundle that can be loaded via CDN. Each bundle includes:
+ * bundle that can be loaded via CDN. It also builds loaders for different
+ * providers (e.g., OpenAI).
+ *
+ * Each widget bundle includes:
  * - The widget code (React or Web Component)
  * - React runtime (for React widgets)
  * - CSS (inlined)
  * - Auto-registration as custom element
  *
  * Output:
- * - cdn/{widget-name}.js - The bundled widget
- * - cdn/{widget-name}.manifest.json - Widget metadata (generated from manifest.ts)
+ * - cdn/widgets/{widget-name}.js - The bundled widget
+ * - cdn/widgets/{widget-name}.manifest.json - Widget metadata
+ * - cdn/loaders/{loader-name}.js - Provider-specific loaders
  */
 
 import * as esbuild from 'esbuild'
@@ -22,7 +26,10 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const SRC_DIR = path.join(ROOT, 'src', 'widgets')
+const LOADERS_SRC_DIR = path.join(ROOT, 'src', 'loaders')
 const CDN_DIR = path.join(ROOT, 'cdn')
+const WIDGETS_CDN_DIR = path.join(CDN_DIR, 'widgets')
+const LOADERS_CDN_DIR = path.join(CDN_DIR, 'loaders')
 
 /**
  * Plugin to inline CSS as a string and inject it into the document
@@ -147,10 +154,10 @@ async function loadJsonManifest(widgetDir) {
   }
 }
 
-async function buildComponent(widgetName) {
+async function buildWidget(widgetName) {
   const widgetDir = path.join(SRC_DIR, widgetName)
-  const outputFile = path.join(CDN_DIR, `${widgetName}.js`)
-  const manifestDest = path.join(CDN_DIR, `${widgetName}.manifest.json`)
+  const outputFile = path.join(WIDGETS_CDN_DIR, `${widgetName}.js`)
+  const manifestDest = path.join(WIDGETS_CDN_DIR, `${widgetName}.manifest.json`)
 
   // Find entry point (prefer .tsx, fallback to .ts)
   let entryPoint = path.join(widgetDir, 'cdn.tsx')
@@ -208,26 +215,75 @@ async function buildComponent(widgetName) {
   }
 }
 
+/**
+ * Find all loaders in src/loaders
+ */
+async function findLoaders() {
+  const loaders = await glob('*.ts', { cwd: LOADERS_SRC_DIR })
+
+  return loaders.map((f) => path.basename(f, '.ts'))
+}
+
+/**
+ * Build a loader for CDN distribution
+ */
+async function buildLoader(loaderName) {
+  const entryPoint = path.join(LOADERS_SRC_DIR, `${loaderName}.ts`)
+  const outputFile = path.join(LOADERS_CDN_DIR, `${loaderName}.js`)
+
+  await esbuild.build({
+    entryPoints: [entryPoint],
+    bundle: true,
+    minify: true,
+    format: 'iife',
+    globalName: 'MCPWidgets',
+    target: ['es2020'],
+    outfile: outputFile,
+    define: {
+      'process.env.NODE_ENV': '"production"',
+    },
+    loader: {
+      '.ts': 'ts',
+    },
+  })
+
+  console.log(`✓ loader/${loaderName}`)
+}
+
 async function main() {
   console.log('🔨 Building CDN bundles...\n')
 
-  // Ensure output directory exists
-  await fs.mkdir(CDN_DIR, { recursive: true })
+  // Ensure output directories exist
+  await fs.mkdir(WIDGETS_CDN_DIR, { recursive: true })
+  await fs.mkdir(LOADERS_CDN_DIR, { recursive: true })
 
   // Find and build all widgets
   const widgets = await findWidgets()
 
   if (widgets.length === 0) {
     console.log('No widgets found with manifest.json')
-
-    return
+  } else {
+    console.log('Building widgets...')
+    for (const widget of widgets) {
+      try {
+        await buildWidget(widget)
+      } catch (err) {
+        console.error(`✗ ${widget} - failed:`, err.message)
+      }
+    }
   }
 
-  for (const widget of widgets) {
-    try {
-      await buildComponent(widget)
-    } catch (err) {
-      console.error(`✗ ${widget} - failed:`, err.message)
+  // Find and build all loaders
+  const loaders = await findLoaders()
+
+  if (loaders.length > 0) {
+    console.log('\nBuilding loaders...')
+    for (const loader of loaders) {
+      try {
+        await buildLoader(loader)
+      } catch (err) {
+        console.error(`✗ loader/${loader} - failed:`, err.message)
+      }
     }
   }
 
