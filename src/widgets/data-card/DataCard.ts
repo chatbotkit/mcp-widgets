@@ -188,12 +188,6 @@ export class DataCardElement extends HTMLElement {
         }
       </div>
     `
-
-    // Notify OpenAI of height change if available
-    if (typeof window !== 'undefined' && 'openai' in window) {
-      const openai = window.openai as { notifyHeight?: () => void }
-      openai.notifyHeight?.()
-    }
   }
 }
 

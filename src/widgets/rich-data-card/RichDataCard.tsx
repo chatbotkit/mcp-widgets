@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-import { notifyHeight } from '../../utils/openai'
 import './styles.css'
 
 const STATUS_STYLES = {
@@ -95,10 +93,6 @@ export function RichDataCard({
   className = '',
 }: RichDataCardProps) {
   const statusStyle = status ? STATUS_STYLES[status] : null
-
-  useEffect(() => {
-    notifyHeight()
-  })
 
   const cardStyle = statusStyle
     ? {
