@@ -1,6 +1,6 @@
 {
   "name": "mcp-widgets",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "UI widgets for MCP integrations (OpenAI, etc.)",
   "type": "module",
   "main": "./dist/index.js",
