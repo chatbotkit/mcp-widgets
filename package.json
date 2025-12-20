@@ -25,6 +25,12 @@
     },
     "./src": {
       "import": "./src/index.ts"
+    },
+    "./src/schemas": {
+      "import": "./src/schemas/index.ts"
+    },
+    "./src/*": {
+      "import": "./src/*"
     }
   },
   "files": [
