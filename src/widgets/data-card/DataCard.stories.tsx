@@ -6,11 +6,11 @@ import { register } from './DataCard'
 register()
 
 /**
- * Data Card is a minimal Web Component for displaying structured key-value data.
+ * Data Card is a minimal widget for displaying structured key-value data.
  * It has no React dependency and can be used in any framework or vanilla HTML.
  */
 const meta: Meta = {
-  title: 'Components/DataCard',
+  title: 'Widgets/DataCard',
   tags: ['autodocs'],
   parameters: {
     docs: {

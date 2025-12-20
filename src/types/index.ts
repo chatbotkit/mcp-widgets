@@ -1,5 +1,5 @@
 /**
- * Type definitions for MCP UI Components
+ * Type definitions for MCP Widgets
  */
 
 export * from './manifest'

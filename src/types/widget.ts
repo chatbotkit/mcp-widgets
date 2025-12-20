@@ -1,11 +1,11 @@
 /**
- * Component Type Definitions
+ * Widget Type Definitions
  */
 
 import type { WidgetManifest } from './manifest'
 
 /**
- * Base props that all MCP UI components receive
+ * Base props that all MCP widgets receive
  */
 export interface MCPWidgetProps {
   /** The tool name this component is rendering for */

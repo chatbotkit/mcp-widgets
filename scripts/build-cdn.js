@@ -10,7 +10,7 @@
  *
  * Output:
  * - cdn/{widget-name}.js - The bundled widget
- * - cdn/{widget-name}.manifest.json - Component metadata (generated from manifest.ts)
+ * - cdn/{widget-name}.manifest.json - Widget metadata (generated from manifest.ts)
  */
 
 import * as esbuild from 'esbuild'

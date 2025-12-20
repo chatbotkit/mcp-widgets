@@ -2,18 +2,18 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { RichDataCard } from './RichDataCard'
 
 /**
- * Rich Data Card is an enhanced React component for displaying structured data
+ * Rich Data Card is an enhanced React widget for displaying structured data
  * with support for titles, descriptions, sections, and status indicators.
  */
 const meta: Meta<typeof RichDataCard> = {
-  title: 'Components/RichDataCard',
+  title: 'Widgets/RichDataCard',
   component: RichDataCard,
   tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
         component:
-          'A React component that displays structured data with rich formatting options including icons, sections, and status indicators.',
+          'A React widget that displays structured data with rich formatting options including icons, sections, and status indicators.',
       },
     },
   },
