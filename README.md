@@ -96,15 +96,19 @@ function handleWeatherTool(location) {
 
 ### OpenAI Skybridge API
 
-Widgets can communicate with the ChatGPT host via the `window.openai` object (when available):
+The loader handles communication with the ChatGPT host via `window.openai`. Widgets themselves should NOT call these APIs directly - the loader manages height notifications and prop extraction.
+
+Available host APIs (used by the loader):
 
 ```javascript
-// Notify ChatGPT of content height changes
-window.openai.notifyHeight()
+// Notify ChatGPT of widget height (takes a number)
+window.openai.notifyIntrinsicHeight(document.body.scrollHeight)
 
-// Access tool response metadata
-const metadata = window.openai.getToolResponseMetadata()
+// Access tool response metadata for props
+window.openai.toolResponseMetadata._meta
 ```
+
+See the [OpenAI Apps SDK docs](https://developers.openai.com/apps-sdk/build/chatgpt-ui/) for the full `window.openai` API reference.
 
 ### Security Considerations
 
