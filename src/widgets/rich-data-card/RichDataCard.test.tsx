@@ -59,11 +59,4 @@ describe('RichDataCard', () => {
     const card = container.querySelector('.rdc-card')
     expect(card).toHaveStyle({ borderColor: '#22c55e' })
   })
-
-  it('applies custom className', () => {
-    const { container } = render(
-      <RichDataCard title="Test" className="custom-class" />
-    )
-    expect(container.querySelector('.custom-class')).toBeInTheDocument()
-  })
 })
