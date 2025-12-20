@@ -1,7 +1,7 @@
 /**
- * Data Card - A pure Web Component for displaying structured data
+ * Data Card Widget - A pure Web Component for displaying structured data
  *
- * This component demonstrates how to build a self-contained web component
+ * This widget demonstrates how to build a self-contained web component
  * that can be used in any framework or vanilla HTML. No React dependency.
  *
  * @example

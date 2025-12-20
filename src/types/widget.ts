@@ -8,18 +8,18 @@ import type { WidgetManifest } from './manifest'
  * Base props that all MCP widgets receive
  */
 export interface MCPWidgetProps {
-  /** The tool name this component is rendering for */
+  /** The tool name this widget is rendering for */
   toolName?: string
   /** Additional class names */
   className?: string
 }
 
 /**
- * Component definition for internal use
+ * Widget definition for internal use
  */
 export interface WidgetDefinition<P extends MCPWidgetProps> {
   /** The React component */
   Component: React.ComponentType<P>
-  /** The component manifest */
+  /** The widget manifest */
   manifest: WidgetManifest
 }

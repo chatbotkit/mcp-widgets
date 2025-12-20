@@ -74,7 +74,7 @@ function DataList({ data }: { data: Record<string, unknown> }) {
 }
 
 /**
- * Rich Data Card - An enhanced React component for displaying structured data
+ * Rich Data Card Widget - An enhanced React widget for displaying structured data
  *
  * Features:
  * - Title with optional icon

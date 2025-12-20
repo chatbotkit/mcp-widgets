@@ -1,5 +1,5 @@
 /**
- * CDN entry point for rich-data-card component
+ * CDN entry point for rich-data-card widget
  *
  * This file is bundled by esbuild into a self-contained IIFE
  * that includes React and registers a web component wrapper.

@@ -14,7 +14,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema'
 export type ComponentFramework = 'web-component' | 'react'
 
 /**
- * Component category for organization
+ * Widget category for organization
  */
 export type ComponentCategory = 'data-display' | 'feedback' | 'input' | 'layout' | 'navigation' | 'other'
 
@@ -22,19 +22,19 @@ export type ComponentCategory = 'data-display' | 'feedback' | 'input' | 'layout'
  * Base manifest metadata (without the props schema)
  */
 export interface ManifestMetadata {
-  /** Component name (same as directory name, kebab-case) */
+  /** Widget name (same as directory name, kebab-case) */
   name: string
   /** Human-readable display name */
   displayName: string
-  /** Component description */
+  /** Widget description */
   description: string
-  /** Version of the component */
+  /** Version of the widget */
   version: string
   /** Custom element tag name (must include hyphen) */
   tagName: string
-  /** Whether the component uses React or is a pure Web Component */
+  /** Whether the widget uses React or is a pure Web Component */
   framework: ComponentFramework
-  /** Component category for organization */
+  /** Widget category for organization */
   category?: ComponentCategory
   /** Keywords for searchability */
   keywords?: string[]
@@ -45,15 +45,15 @@ export interface ManifestMetadata {
 }
 
 /**
- * Full component manifest with Zod props schema
+ * Full widget manifest with Zod props schema
  */
 export interface WidgetManifest<T extends z.ZodTypeAny = z.ZodTypeAny> extends ManifestMetadata {
-  /** Zod schema for component props - used for validation and JSON Schema generation */
+  /** Zod schema for widget props - used for validation and JSON Schema generation */
   propsSchema: T
 }
 
 /**
- * Helper to define a component manifest with type inference
+ * Helper to define a widget manifest with type inference
  */
 export function defineManifest<T extends z.ZodTypeAny>(
   manifest: WidgetManifest<T>

@@ -11,7 +11,7 @@ export const sectionSchema = z.object({
 })
 
 /**
- * Props schema for the RichDataCard component
+ * Props schema for the RichDataCard widget
  *
  * This schema is used for:
  * 1. Type inference in TypeScript
@@ -66,7 +66,7 @@ export type RichDataCardProps = z.infer<typeof propsSchema>
 export type Section = z.infer<typeof sectionSchema>
 
 /**
- * Component manifest
+ * Widget manifest
  */
 export const manifest = defineManifest({
   name: 'rich-data-card',

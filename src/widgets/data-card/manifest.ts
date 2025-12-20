@@ -1,7 +1,7 @@
 import { defineManifest, z } from '../../types/manifest'
 
 /**
- * Props schema for the DataCard component
+ * Props schema for the DataCard widget
  *
  * This schema is used for:
  * 1. Type inference in TypeScript
@@ -29,13 +29,13 @@ export const propsSchema = z.object({
 export type DataCardProps = z.infer<typeof propsSchema>
 
 /**
- * Component manifest
+ * Widget manifest
  */
 export const manifest = defineManifest({
   name: 'data-card',
   displayName: 'Data Card',
   description:
-    'A minimal card component for displaying structured data. Pure Web Component with no dependencies.',
+    'A minimal card widget for displaying structured data. Pure Web Component with no dependencies.',
   version: '0.0.1',
   tagName: 'mcp-data-card',
   framework: 'web-component',
