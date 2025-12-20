@@ -1,8 +1,8 @@
 /**
  * CDN Build Script
  *
- * This script builds each widget in src/widgets into a self-contained
- * IIFE bundle that can be loaded via CDN. Each bundle includes:
+ * This script builds each widget in src/widgets into a self-contained IIFE
+ * bundle that can be loaded via CDN. Each bundle includes:
  * - The widget code (React or Web Component)
  * - React runtime (for React widgets)
  * - CSS (inlined)
@@ -23,18 +23,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const SRC_DIR = path.join(ROOT, 'src', 'widgets')
 const CDN_DIR = path.join(ROOT, 'cdn')
-const DIST_DIR = path.join(ROOT, 'dist', 'widgets')
 
 /**
  * Plugin to inline CSS as a string and inject it into the document
  */
 const inlineCSSPlugin = {
   name: 'inline-css',
+
   setup(build) {
     build.onLoad({ filter: /\.css$/ }, async (args) => {
       const css = await fs.readFile(args.path, 'utf8')
+
       // Escape backticks and backslashes for template literal
       const escaped = css.replace(/\\/g, '\\\\').replace(/`/g, '\\`')
+
       return {
         contents: `
           (function() {
@@ -98,7 +100,6 @@ async function loadTsManifest(widgetDir, widgetName) {
   const zodToJsonSchemaModule = await import('zod-to-json-schema')
 
   // Execute the bundled code with real zod
-  // eslint-disable-next-line no-new-func
   const moduleExports = {}
   const moduleObj = { exports: moduleExports }
   const fn = new Function('module', 'exports', 'require', code)
@@ -106,6 +107,7 @@ async function loadTsManifest(widgetDir, widgetName) {
   fn(moduleObj, moduleExports, (id) => {
     if (id === 'zod') return zod
     if (id === 'zod-to-json-schema') return zodToJsonSchemaModule
+
     throw new Error(`Unexpected require: ${id}`)
   })
 
@@ -113,6 +115,7 @@ async function loadTsManifest(widgetDir, widgetName) {
 
   if (!manifest) {
     console.warn(`⚠️  ${widgetName}: manifest.ts has no 'manifest' export`)
+
     return null
   }
 
@@ -121,6 +124,7 @@ async function loadTsManifest(widgetDir, widgetName) {
 
   return {
     ...metadata,
+
     propsSchema: zodToJsonSchemaModule.zodToJsonSchema(propsSchema, {
       $refStrategy: 'none',
       target: 'jsonSchema7',
@@ -133,8 +137,10 @@ async function loadTsManifest(widgetDir, widgetName) {
  */
 async function loadJsonManifest(widgetDir) {
   const manifestPath = path.join(widgetDir, 'manifest.json')
+
   try {
     const content = await fs.readFile(manifestPath, 'utf8')
+
     return JSON.parse(content)
   } catch {
     return null
@@ -148,6 +154,7 @@ async function buildComponent(widgetName) {
 
   // Find entry point (prefer .tsx, fallback to .ts)
   let entryPoint = path.join(widgetDir, 'cdn.tsx')
+
   try {
     await fs.access(entryPoint)
   } catch {
@@ -158,6 +165,7 @@ async function buildComponent(widgetName) {
       console.warn(
         `⚠️  Skipping ${widgetName}: no cdn.tsx or cdn.ts entry point`
       )
+
       return
     }
   }
@@ -186,12 +194,14 @@ async function buildComponent(widgetName) {
 
   // Try to load TS manifest first, then fall back to JSON
   let manifestData = await loadTsManifest(widgetDir, widgetName)
+
   if (!manifestData) {
     manifestData = await loadJsonManifest(widgetDir)
   }
 
   if (manifestData) {
     await fs.writeFile(manifestDest, JSON.stringify(manifestData, null, 2))
+
     console.log(`✓ ${widgetName} - bundle + manifest`)
   } else {
     console.log(`✓ ${widgetName} - bundle only (no manifest)`)
@@ -209,6 +219,7 @@ async function main() {
 
   if (widgets.length === 0) {
     console.log('No widgets found with manifest.json')
+
     return
   }
 
