@@ -1,31 +1,28 @@
 /**
  * Component Manifest Type Definition
  *
- * Each component includes a manifest.json that describes its metadata.
- * The manifest is copied to CDN alongside the bundled JS file.
+ * Each component includes a manifest.ts that defines its metadata and props schema.
+ * The manifest is converted to JSON Schema at build time.
  */
 
-/**
- * Attribute definition in the manifest
- */
-export interface ManifestAttribute {
-  /** Attribute name (kebab-case for HTML attributes) */
-  name: string
-  /** TypeScript/JSON type */
-  type: 'string' | 'number' | 'boolean' | 'object' | 'array'
-  /** Whether this attribute is required */
-  required?: boolean
-  /** Default value if not provided */
-  default?: unknown
-  /** Human-readable description */
-  description?: string
-}
+import { z } from 'zod'
+import { zodToJsonSchema } from 'zod-to-json-schema'
 
 /**
- * Component manifest structure
+ * Framework type for the component
  */
-export interface ComponentManifest {
-  /** Component name (same as directory name) */
+export type ComponentFramework = 'web-component' | 'react'
+
+/**
+ * Component category for organization
+ */
+export type ComponentCategory = 'data-display' | 'feedback' | 'input' | 'layout' | 'navigation' | 'other'
+
+/**
+ * Base manifest metadata (without the props schema)
+ */
+export interface ManifestMetadata {
+  /** Component name (same as directory name, kebab-case) */
   name: string
   /** Human-readable display name */
   displayName: string
@@ -33,12 +30,12 @@ export interface ComponentManifest {
   description: string
   /** Version of the component */
   version: string
-  /** Custom element tag name */
+  /** Custom element tag name (must include hyphen) */
   tagName: string
-  /** Attributes the component accepts */
-  attributes: ManifestAttribute[]
+  /** Whether the component uses React or is a pure Web Component */
+  framework: ComponentFramework
   /** Component category for organization */
-  category?: string
+  category?: ComponentCategory
   /** Keywords for searchability */
   keywords?: string[]
   /** Author information */
@@ -46,3 +43,68 @@ export interface ComponentManifest {
   /** License */
   license?: string
 }
+
+/**
+ * Full component manifest with Zod props schema
+ */
+export interface ComponentManifest<T extends z.ZodTypeAny = z.ZodTypeAny> extends ManifestMetadata {
+  /** Zod schema for component props - used for validation and JSON Schema generation */
+  propsSchema: T
+}
+
+/**
+ * Helper to define a component manifest with type inference
+ */
+export function defineManifest<T extends z.ZodTypeAny>(
+  manifest: ComponentManifest<T>
+): ComponentManifest<T> {
+  return manifest
+}
+
+/**
+ * Convert a Zod schema to JSON Schema for the manifest output
+ */
+export function propsSchemaToJsonSchema(schema: z.ZodTypeAny): object {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return zodToJsonSchema(schema as any, {
+    $refStrategy: 'none',
+    target: 'jsonSchema7',
+  })
+}
+
+/**
+ * Generate the JSON manifest from a TypeScript manifest
+ * This is used by the build script to create the .manifest.json files
+ */
+export function generateJsonManifest(manifest: ComponentManifest): object {
+  const { propsSchema, ...metadata } = manifest
+  return {
+    ...metadata,
+    propsSchema: propsSchemaToJsonSchema(propsSchema),
+  }
+}
+
+/**
+ * Validate props against a manifest's schema
+ * Returns parsed props or throws ZodError
+ */
+export function validateProps<T extends z.ZodTypeAny>(
+  manifest: ComponentManifest<T>,
+  props: unknown
+): z.infer<T> {
+  return manifest.propsSchema.parse(props)
+}
+
+/**
+ * Safely validate props, returning a result object instead of throwing
+ */
+export function safeValidateProps<T extends z.ZodTypeAny>(
+  manifest: ComponentManifest<T>,
+  props: unknown
+) {
+  return manifest.propsSchema.safeParse(props)
+}
+
+// Re-export zod for convenience
+export { z }
+
