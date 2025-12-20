@@ -7,16 +7,24 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "source": "./src/index.ts",
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./schemas": {
+      "source": "./src/schemas/index.ts",
       "types": "./dist/schemas/index.d.ts",
-      "import": "./dist/schemas/index.js"
+      "import": "./dist/schemas/index.js",
+      "default": "./dist/schemas/index.js"
     },
     "./widgets/*": {
       "types": "./dist/widgets/*/index.d.ts",
-      "import": "./dist/widgets/*/index.js"
+      "import": "./dist/widgets/*/index.js",
+      "default": "./dist/widgets/*/index.js"
+    },
+    "./src": {
+      "import": "./src/index.ts"
     }
   },
   "files": [
