@@ -40,8 +40,6 @@ export interface ManifestMetadata {
   keywords?: string[]
   /** Author information */
   author?: string
-  /** License */
-  license?: string
 }
 
 /**
