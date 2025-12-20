@@ -51,14 +51,34 @@ export class DataCardElement extends HTMLElement {
     const dataAttr = this.getAttribute('data')
     if (!dataAttr) return null
     try {
-      return JSON.parse(dataAttr)
-    } catch {
+      const parsed = JSON.parse(dataAttr)
+      // Validate: must be a plain object (not array, not null)
+      if (
+        typeof parsed !== 'object' ||
+        parsed === null ||
+        Array.isArray(parsed)
+      ) {
+        console.warn(
+          '[mcp-data-card] Invalid data: expected object, got',
+          typeof parsed
+        )
+        return null
+      }
+      return parsed as Record<string, unknown>
+    } catch (err) {
+      console.warn('[mcp-data-card] Invalid JSON in data attribute:', err)
       return null
     }
   }
 
   private get status(): StatusType | null {
     const status = this.getAttribute('status')
+    if (status && !(status in STATUS_STYLES)) {
+      console.warn(
+        `[mcp-data-card] Invalid status: "${status}". Expected: ${Object.keys(STATUS_STYLES).join(', ')}`
+      )
+      return null
+    }
     return status && status in STATUS_STYLES ? (status as StatusType) : null
   }
 

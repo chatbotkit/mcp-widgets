@@ -83,8 +83,23 @@ export function generateJsonManifest(manifest: WidgetManifest): object {
 }
 
 /**
- * Validate props against a manifest's schema
- * Returns parsed props or throws ZodError
+ * Validate props against a manifest's schema (throws on invalid)
+ *
+ * Use this when you want to ensure props are valid before rendering.
+ * Throws ZodError if validation fails.
+ *
+ * @example
+ * ```ts
+ * import { validateProps } from 'mcp-widgets'
+ * import { manifest } from 'mcp-widgets/widgets/data-card'
+ *
+ * try {
+ *   const validProps = validateProps(manifest, userInput)
+ *   // validProps is typed and guaranteed valid
+ * } catch (err) {
+ *   console.error('Invalid props:', err.issues)
+ * }
+ * ```
  */
 export function validateProps<T extends z.ZodTypeAny>(
   manifest: WidgetManifest<T>,
@@ -94,13 +109,55 @@ export function validateProps<T extends z.ZodTypeAny>(
 }
 
 /**
- * Safely validate props, returning a result object instead of throwing
+ * Safely validate props without throwing
+ *
+ * Returns a result object with `success` boolean and either `data` or `error`.
+ * Use this for graceful error handling.
+ *
+ * @example
+ * ```ts
+ * import { safeValidateProps } from 'mcp-widgets'
+ * import { manifest } from 'mcp-widgets/widgets/data-card'
+ *
+ * const result = safeValidateProps(manifest, userInput)
+ * if (result.success) {
+ *   render(result.data) // typed and valid
+ * } else {
+ *   console.warn('Invalid props:', result.error.issues)
+ *   renderFallback() // graceful degradation
+ * }
+ * ```
  */
 export function safeValidateProps<T extends z.ZodTypeAny>(
   manifest: WidgetManifest<T>,
   props: unknown
 ) {
   return manifest.propsSchema.safeParse(props)
+}
+
+/**
+ * Parse and validate props directly from a schema
+ *
+ * Simpler alternative when you have the schema but not the full manifest.
+ *
+ * @example
+ * ```ts
+ * import { parseProps } from 'mcp-widgets'
+ * import { propsSchema } from 'mcp-widgets/widgets/data-card'
+ *
+ * // Returns validated props or undefined on error
+ * const props = parseProps(propsSchema, userInput)
+ * if (props) {
+ *   // props is typed as DataCardProps
+ * }
+ * ```
+ */
+export function parseProps<T extends z.ZodTypeAny>(
+  schema: T,
+  props: unknown
+): z.infer<T> | undefined {
+  const result = schema.safeParse(props)
+  return result.success ? result.data : undefined
 }
 
 // Re-export zod for convenience

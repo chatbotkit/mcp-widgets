@@ -14,9 +14,9 @@ export const sectionSchema = z.object({
  * Props schema for the RichDataCard widget
  *
  * This schema is used for:
- * 1. Type inference in TypeScript
- * 2. Runtime validation of props
- * 3. JSON Schema generation for the manifest
+ * 1. TypeScript type inference (compile-time)
+ * 2. JSON Schema generation for the manifest (build-time)
+ * 3. Optional runtime validation via validateProps/safeValidateProps
  */
 export const propsSchema = z.object({
   /** Title displayed at the top of the card */
