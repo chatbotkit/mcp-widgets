@@ -231,12 +231,14 @@ async function buildLoader(loaderName) {
   const entryPoint = path.join(LOADERS_SRC_DIR, `${loaderName}.ts`)
   const outputFile = path.join(LOADERS_CDN_DIR, `${loaderName}.js`)
 
+  // @note loaders assign themselves to window.MCPWidgets directly
+  // we don't use globalName to avoid esbuild wrapping exports in { default: ... }
+
   await esbuild.build({
     entryPoints: [entryPoint],
     bundle: true,
     minify: true,
     format: 'iife',
-    globalName: 'MCPWidgets',
     target: ['es2020'],
     outfile: outputFile,
     define: {

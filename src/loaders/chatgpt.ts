@@ -142,6 +142,7 @@ const MCPWidgets = {
   notifyHeight,
 }
 
-window.MCPWidgets = MCPWidgets
+// @note assign directly to window - do not use export default with IIFE bundles
+// as esbuild wraps exports in { default: ... } breaking the global API
 
-export default MCPWidgets
+window.MCPWidgets = MCPWidgets
