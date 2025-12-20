@@ -40,12 +40,18 @@ export interface ManifestMetadata {
   keywords?: string[]
   /** Author information */
   author?: string
+  /** Props schema (JSON Schema format when fetched from manifest.json) */
+  propsSchema?: Record<string, unknown>
 }
 
 /**
- * Full widget manifest with Zod props schema
+ * Full widget manifest with Zod props schema (used at build time)
+ *
+ * This extends ManifestMetadata but overrides propsSchema with a Zod type.
+ * At build time, the Zod schema is converted to JSON Schema.
  */
-export interface WidgetManifest<T extends z.ZodTypeAny = z.ZodTypeAny> extends ManifestMetadata {
+export interface WidgetManifest<T extends z.ZodTypeAny = z.ZodTypeAny>
+  extends Omit<ManifestMetadata, 'propsSchema'> {
   /** Zod schema for widget props - used for validation and JSON Schema generation */
   propsSchema: T
 }
