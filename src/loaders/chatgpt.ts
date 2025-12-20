@@ -51,12 +51,14 @@ function toKebabCase(str: string): string {
  * to the full _meta object for backwards compatibility.
  */
 function getProps(): Record<string, unknown> {
-  const meta = window.openai?.toolResponseMetadata || {}
-  const _meta = (meta._meta as Record<string, unknown>) || {}
+  const meta = (window.openai?.toolResponseMetadata || {}) as Record<
+    string,
+    unknown
+  >
 
-  // @note prefer dedicated widget property, fall back to full _meta for compatibility
+  // @note prefer dedicated widget property, fall back to full meta for compatibility
 
-  return (_meta.widget as Record<string, unknown>) || _meta
+  return (meta.widget as Record<string, unknown>) || meta
 }
 
 /**
