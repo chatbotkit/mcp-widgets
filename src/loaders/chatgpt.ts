@@ -84,16 +84,27 @@ function createElement(
 }
 
 /**
- * Set up a MutationObserver to notify OpenAI of height changes
+ * Set up observers to notify OpenAI of height changes
  */
 function observeHeightChanges(): void {
   if (!window.openai?.notifyIntrinsicHeight) return
 
-  const observer = new MutationObserver(() => {
+  // @note use ResizeObserver for accurate size change detection
+  // this handles window resize, CSS transitions, image loading, etc.
+
+  const resizeObserver = new ResizeObserver(() => {
     notifyHeight()
   })
 
-  observer.observe(document.body, {
+  resizeObserver.observe(document.body)
+
+  // @note MutationObserver as backup for DOM changes that might not trigger resize
+
+  const mutationObserver = new MutationObserver(() => {
+    notifyHeight()
+  })
+
+  mutationObserver.observe(document.body, {
     childList: true,
     subtree: true,
     attributes: true,
