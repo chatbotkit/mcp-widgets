@@ -70,7 +70,9 @@ async function buildComponent(componentName) {
     try {
       await fs.access(entryPoint)
     } catch {
-      console.warn(`⚠️  Skipping ${componentName}: no cdn.tsx or cdn.ts entry point`)
+      console.warn(
+        `⚠️  Skipping ${componentName}: no cdn.tsx or cdn.ts entry point`
+      )
       return
     }
   }

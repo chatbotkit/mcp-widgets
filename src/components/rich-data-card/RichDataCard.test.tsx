@@ -53,13 +53,17 @@ describe('RichDataCard', () => {
   })
 
   it('applies status styling', () => {
-    const { container } = render(<RichDataCard title="Success" status="success" />)
+    const { container } = render(
+      <RichDataCard title="Success" status="success" />
+    )
     const card = container.querySelector('.rdc-card')
     expect(card).toHaveStyle({ borderColor: '#22c55e' })
   })
 
   it('applies custom className', () => {
-    const { container } = render(<RichDataCard title="Test" className="custom-class" />)
+    const { container } = render(
+      <RichDataCard title="Test" className="custom-class" />
+    )
     expect(container.querySelector('.custom-class')).toBeInTheDocument()
   })
 })

@@ -68,7 +68,8 @@ export class DataCardElement extends HTMLElement {
     if (typeof value === 'boolean') return value ? 'Yes' : 'No'
     if (typeof value === 'number') return value.toLocaleString()
     if (typeof value === 'string') return value
-    if (Array.isArray(value)) return value.map((v) => this.formatValue(v)).join(', ')
+    if (Array.isArray(value))
+      return value.map((v) => this.formatValue(v)).join(', ')
     if (typeof value === 'object') return JSON.stringify(value)
     return String(value)
   }

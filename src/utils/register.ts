@@ -31,7 +31,12 @@ export function registerComponent<P extends object>(
   Component: React.ComponentType<P>,
   options: RegisterOptions<P>
 ): void {
-  const { tagName, observedAttributes = [], shadow = false, attributeToProps } = options
+  const {
+    tagName,
+    observedAttributes = [],
+    shadow = false,
+    attributeToProps,
+  } = options
 
   class ReactElement extends HTMLElement {
     private root: Root | null = null

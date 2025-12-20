@@ -10,4 +10,8 @@ export type { StatusType as DataCardStatusType } from './data-card'
 
 // React Component
 export { RichDataCard } from './rich-data-card'
-export type { RichDataCardProps, Section, StatusType as RichDataCardStatusType } from './rich-data-card'
+export type {
+  RichDataCardProps,
+  Section,
+  StatusType as RichDataCardStatusType,
+} from './rich-data-card'

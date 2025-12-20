@@ -1,1 +1,6 @@
-export { RichDataCard, type RichDataCardProps, type Section, type StatusType } from './RichDataCard'
+export {
+  RichDataCard,
+  type RichDataCardProps,
+  type Section,
+  type StatusType,
+} from './RichDataCard'
