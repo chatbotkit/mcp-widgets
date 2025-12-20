@@ -33,12 +33,6 @@ const REQUIRED_MANIFEST_FIELDS = [
   'propsSchema',
 ]
 
-/** Expected widgets to validate */
-const EXPECTED_WIDGETS = ['data-card', 'rich-data-card']
-
-/** Expected loaders to validate */
-const EXPECTED_LOADERS = ['openai']
-
 let hasErrors = false
 
 function logSuccess(message) {
@@ -232,17 +226,7 @@ async function checkDirectoryStructure() {
   }
 
   const widgetFiles = await fs.readdir(WIDGETS_CDN_DIR)
-  const expectedWidgetFiles = new Set([
-    ...EXPECTED_WIDGETS.map((w) => `${w}.js`),
-    ...EXPECTED_WIDGETS.map((w) => `${w}.manifest.json`),
-  ])
-
-  const unexpectedWidgets = widgetFiles.filter(
-    (f) => !expectedWidgetFiles.has(f)
-  )
-  if (unexpectedWidgets.length > 0) {
-    logInfo(`Extra files in cdn/widgets/: ${unexpectedWidgets.join(', ')}`)
-  }
+  logInfo(`Found ${widgetFiles.length} files in cdn/widgets/`)
 
   // Check loaders directory
   if (!(await fileExists(LOADERS_CDN_DIR))) {
@@ -251,16 +235,37 @@ async function checkDirectoryStructure() {
   }
 
   const loaderFiles = await fs.readdir(LOADERS_CDN_DIR)
-  const expectedLoaderFiles = new Set(EXPECTED_LOADERS.map((l) => `${l}.js`))
-
-  const unexpectedLoaders = loaderFiles.filter(
-    (f) => !expectedLoaderFiles.has(f)
-  )
-  if (unexpectedLoaders.length > 0) {
-    logInfo(`Extra files in cdn/loaders/: ${unexpectedLoaders.join(', ')}`)
-  }
+  logInfo(`Found ${loaderFiles.length} files in cdn/loaders/`)
 
   logSuccess('Directory structure is correct')
+}
+
+/**
+ * Discover widgets from the cdn/widgets directory
+ * Widgets are identified by .manifest.json files
+ */
+async function discoverWidgets() {
+  if (!(await fileExists(WIDGETS_CDN_DIR))) {
+    return []
+  }
+
+  const files = await fs.readdir(WIDGETS_CDN_DIR)
+  return files
+    .filter((f) => f.endsWith('.manifest.json'))
+    .map((f) => f.replace('.manifest.json', ''))
+}
+
+/**
+ * Discover loaders from the cdn/loaders directory
+ * Loaders are identified by .js files
+ */
+async function discoverLoaders() {
+  if (!(await fileExists(LOADERS_CDN_DIR))) {
+    return []
+  }
+
+  const files = await fs.readdir(LOADERS_CDN_DIR)
+  return files.filter((f) => f.endsWith('.js')).map((f) => f.replace('.js', ''))
 }
 
 /**
@@ -275,15 +280,27 @@ async function main() {
     process.exit(1)
   }
 
-  // Validate each widget
-  for (const widget of EXPECTED_WIDGETS) {
+  // Discover and validate widgets
+  const widgets = await discoverWidgets()
+
+  if (widgets.length === 0) {
+    logError('No widgets found in cdn/widgets/')
+  }
+
+  for (const widget of widgets) {
     console.log(`\n📦 Widget: ${widget}`)
     await validateBundle(widget)
     await validateManifest(widget)
   }
 
-  // Validate each loader
-  for (const loader of EXPECTED_LOADERS) {
+  // Discover and validate loaders
+  const loaders = await discoverLoaders()
+
+  if (loaders.length === 0) {
+    logError('No loaders found in cdn/loaders/')
+  }
+
+  for (const loader of loaders) {
     console.log(`\n🔌 Loader: ${loader}`)
     await validateLoader(loader)
   }
