@@ -28,13 +28,14 @@
     "build:cdn": "node scripts/build-cdn.js",
     "build:css": "npx @tailwindcss/cli -i ./src/styles/base.css -o ./dist/styles.css",
     "clean": "rimraf dist cdn *.tsbuildinfo",
-    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "prepublishOnly": "pnpm run clean && pnpm run build && pnpm run validate:cdn",
     "dev": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "check": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "validate:cdn": "node scripts/validate-cdn.js"
   },
   "keywords": [
     "mcp",
