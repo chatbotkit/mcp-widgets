@@ -87,7 +87,9 @@ async function validateBundle(widgetName) {
     // Use Function constructor to parse (doesn't execute)
     // eslint-disable-next-line no-new-func
     new Function(content)
-    logSuccess(`Bundle is valid JS: ${widgetName}.js (${formatSize(stats.size)})`)
+    logSuccess(
+      `Bundle is valid JS: ${widgetName}.js (${formatSize(stats.size)})`
+    )
   } catch (err) {
     logError(`Bundle has syntax errors: ${widgetName}.js - ${err.message}`)
     return false
@@ -123,7 +125,9 @@ async function validateManifest(widgetName) {
     manifest = JSON.parse(content)
     logSuccess(`Manifest is valid JSON: ${widgetName}.manifest.json`)
   } catch (err) {
-    logError(`Manifest has invalid JSON: ${widgetName}.manifest.json - ${err.message}`)
+    logError(
+      `Manifest has invalid JSON: ${widgetName}.manifest.json - ${err.message}`
+    )
     return false
   }
 
@@ -149,7 +153,9 @@ async function validateManifest(widgetName) {
   }
 
   logSuccess(`Manifest has all required fields`)
-  logInfo(`  → ${manifest.displayName} v${manifest.version} (${manifest.framework})`)
+  logInfo(
+    `  → ${manifest.displayName} v${manifest.version} (${manifest.framework})`
+  )
 
   return true
 }
