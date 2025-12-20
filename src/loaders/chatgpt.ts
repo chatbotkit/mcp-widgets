@@ -46,10 +46,17 @@ function toKebabCase(str: string): string {
 
 /**
  * Get props from OpenAI's tool response metadata
+ *
+ * Reads from _meta.widget if available (preferred), otherwise falls back
+ * to the full _meta object for backwards compatibility.
  */
 function getProps(): Record<string, unknown> {
   const meta = window.openai?.toolResponseMetadata || {}
-  return (meta._meta as Record<string, unknown>) || {}
+  const _meta = (meta._meta as Record<string, unknown>) || {}
+
+  // @note prefer dedicated widget property, fall back to full _meta for compatibility
+
+  return (_meta.widget as Record<string, unknown>) || _meta
 }
 
 /**
