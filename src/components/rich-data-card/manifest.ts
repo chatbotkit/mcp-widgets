@@ -26,16 +26,28 @@ export const propsSchema = z.object({
   description: z.string().optional().describe('Subtitle or description text'),
 
   /** Icon/emoji to display in the header */
-  icon: z.string().optional().describe('Icon or emoji character for the header'),
+  icon: z
+    .string()
+    .optional()
+    .describe('Icon or emoji character for the header'),
 
   /** Main data to display as key-value pairs */
-  data: z.record(z.unknown()).optional().describe('Main data section as key-value pairs'),
+  data: z
+    .record(z.unknown())
+    .optional()
+    .describe('Main data section as key-value pairs'),
 
   /** Named sections with their own data */
-  sections: z.array(sectionSchema).optional().describe('Additional named sections'),
+  sections: z
+    .array(sectionSchema)
+    .optional()
+    .describe('Additional named sections'),
 
   /** Footer text */
-  footer: z.string().optional().describe('Footer text at the bottom of the card'),
+  footer: z
+    .string()
+    .optional()
+    .describe('Footer text at the bottom of the card'),
 
   /** Status indicator styling */
   status: z

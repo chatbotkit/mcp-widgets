@@ -13,7 +13,10 @@ export const propsSchema = z.object({
   title: z.string().optional().describe('Card title'),
 
   /** JSON data to display as key-value pairs */
-  data: z.record(z.unknown()).optional().describe('Data object to display as key-value pairs'),
+  data: z
+    .record(z.unknown())
+    .optional()
+    .describe('Data object to display as key-value pairs'),
 
   /** Status indicator styling */
   status: z
