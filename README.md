@@ -1,4 +1,4 @@
-# @chatbotkit/mcp-widgets
+# MCP Widgets
 
 UI widgets for rendering MCP (Model Context Protocol) tool responses in AI assistants like ChatGPT.
 
@@ -42,7 +42,7 @@ Load widgets via CDN and use them as custom HTML elements:
 ### As a React Library
 
 ```tsx
-import { RichDataCard } from '@chatbotkit/mcp-widgets'
+import { RichDataCard } from 'mcp-widgets'
 
 function MyWidget() {
   return (
