@@ -4,4 +4,4 @@
 
 export * from './manifest'
 export * from './openai'
-export * from './component'
+export * from './widget'

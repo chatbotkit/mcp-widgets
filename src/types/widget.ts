@@ -2,12 +2,12 @@
  * Component Type Definitions
  */
 
-import type { ComponentManifest } from './manifest'
+import type { WidgetManifest } from './manifest'
 
 /**
  * Base props that all MCP UI components receive
  */
-export interface MCPComponentProps {
+export interface MCPWidgetProps {
   /** The tool name this component is rendering for */
   toolName?: string
   /** Additional class names */
@@ -17,9 +17,9 @@ export interface MCPComponentProps {
 /**
  * Component definition for internal use
  */
-export interface ComponentDefinition<P extends MCPComponentProps> {
+export interface WidgetDefinition<P extends MCPWidgetProps> {
   /** The React component */
   Component: React.ComponentType<P>
   /** The component manifest */
-  manifest: ComponentManifest
+  manifest: WidgetManifest
 }

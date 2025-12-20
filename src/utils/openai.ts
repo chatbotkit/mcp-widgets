@@ -2,7 +2,7 @@
  * OpenAI Skybridge Utilities
  *
  * Helper functions for interacting with OpenAI's widget API (Skybridge).
- * These utilities help components communicate with the ChatGPT host.
+ * These utilities help widgets communicate with the ChatGPT host.
  *
  * @see https://developers.openai.com/apps-sdk/build/mcp-server
  */
@@ -27,8 +27,8 @@ export function getToolResponseMetadata(): ToolResponseMetadata | undefined {
 }
 
 /**
- * Notify OpenAI of the component's intrinsic height
- * Call this whenever the component's height changes
+ * Notify OpenAI of the widget's intrinsic height
+ * Call this whenever the widget's height changes
  */
 export function notifyHeight(height?: number): void {
   const openai = getOpenAI()

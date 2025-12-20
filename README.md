@@ -1,35 +1,35 @@
-# @chatbotkit/mcp-ui-components
+# @chatbotkit/mcp-widgets
 
-UI components for rendering MCP (Model Context Protocol) tool responses in AI assistants like ChatGPT.
+UI widgets for rendering MCP (Model Context Protocol) tool responses in AI assistants like ChatGPT.
 
 ## Overview
 
-When an MCP tool returns data, AI assistants can display it using custom UI components instead of plain text. This package provides ready-to-use components that can be embedded via a simple `<script>` tag.
+When an MCP tool returns data, AI assistants can display it using custom UI widgets instead of plain text. This package provides ready-to-use widgets that can be embedded via a simple `<script>` tag.
 
 ## Installation
 
 ```bash
-npm install @chatbotkit/mcp-ui-components
+npm install mcp-widgets
 # or
-pnpm add @chatbotkit/mcp-ui-components
+pnpm add mcp-widgets
 ```
 
-## Components
+## Widgets
 
-| Component        | Framework     | Size   | Description                                |
-| ---------------- | ------------- | ------ | ------------------------------------------ |
-| `data-card`      | Web Component | ~3KB   | Simple key-value data display              |
-| `rich-data-card` | React         | ~148KB | Enhanced card with sections, icons, footer |
+| Widget           | Framework  | Size   | Description                                |
+| ---------------- | ---------- | ------ | ------------------------------------------ |
+| `data-card`      | Web Widget | ~3KB   | Simple key-value data display              |
+| `rich-data-card` | React      | ~148KB | Enhanced card with sections, icons, footer |
 
 ## Usage
 
 ### CDN Embedding (for MCP tools)
 
-Load components via CDN and use them as custom HTML elements:
+Load widgets via CDN and use them as custom HTML elements:
 
 ```html
-<!-- Load the component -->
-<script src="https://unpkg.com/@chatbotkit/mcp-ui-components/cdn/data-card.js"></script>
+<!-- Load the widget -->
+<script src="https://unpkg.com/mcp-widgets/cdn/data-card.js"></script>
 
 <!-- Use it -->
 <mcp-data-card
@@ -42,9 +42,9 @@ Load components via CDN and use them as custom HTML elements:
 ### As a React Library
 
 ```tsx
-import { RichDataCard } from '@chatbotkit/mcp-ui-components'
+import { RichDataCard } from '@chatbotkit/mcp-widgets'
 
-function MyComponent() {
+function MyWidget() {
   return (
     <RichDataCard
       title="Order Summary"
@@ -63,13 +63,13 @@ function MyComponent() {
 
 1. **User asks a question** in ChatGPT (e.g., "What's the weather?")
 2. **ChatGPT calls your MCP tool** which returns structured data
-3. **Your tool response includes HTML** with a `<script>` tag pointing to a CDN-hosted component
+3. **Your tool response includes HTML** with a `<script>` tag pointing to a CDN-hosted widget
 4. **ChatGPT renders the HTML** in a sandboxed iframe
-5. **The component loads and displays** the data visually
+5. **The widget loads and displays** the data visually
 
 ### Example MCP Tool Response
 
-When your MCP server handles a tool call, return HTML that embeds a component:
+When your MCP server handles a tool call, return HTML that embeds a widget:
 
 ```javascript
 // In your MCP server tool handler
@@ -81,7 +81,7 @@ function handleWeatherTool(location) {
       {
         type: 'text',
         text: `
-        <script src="https://unpkg.com/@chatbotkit/mcp-ui-components/cdn/data-card.js"></script>
+        <script src="https://unpkg.com/mcp-widgets/cdn/data-card.js"></script>
         <mcp-data-card
           title="Weather in ${location}"
           data='${JSON.stringify(data)}'
@@ -96,7 +96,7 @@ function handleWeatherTool(location) {
 
 ### OpenAI Skybridge API
 
-Components can communicate with the ChatGPT host via the `window.openai` object (when available):
+Widgets can communicate with the ChatGPT host via the `window.openai` object (when available):
 
 ```javascript
 // Notify ChatGPT of content height changes
@@ -108,16 +108,16 @@ const metadata = window.openai.getToolResponseMetadata()
 
 ### Security Considerations
 
-- Components run in a sandboxed iframe with limited capabilities
+- Widgets run in a sandboxed iframe with limited capabilities
 - Data is passed via HTML attributes (must be JSON-stringified)
 - No direct access to the parent page or user session
 - CDN URLs should use HTTPS
 
-## Component Reference
+## Widget Reference
 
 ### `<mcp-data-card>`
 
-A lightweight Web Component (no React dependency).
+A lightweight Web Widget (no React dependency).
 
 | Attribute | Type                                        | Description                |
 | --------- | ------------------------------------------- | -------------------------- |
@@ -127,7 +127,7 @@ A lightweight Web Component (no React dependency).
 
 ### `<mcp-rich-data-card>`
 
-A React-based component with more features.
+A React-based widget with more features.
 
 | Attribute     | Type                                        | Description                       |
 | ------------- | ------------------------------------------- | --------------------------------- |
@@ -158,46 +158,46 @@ pnpm build
 pnpm build:cdn
 ```
 
-## Creating New Components
+## Creating New Widgets
 
-1. Create a folder in `src/components/{component-name}/`
+1. Create a folder in `src/widgets/{widget-name}/`
 2. Add required files:
-   - `ComponentName.ts` (Web Component) or `ComponentName.tsx` (React)
-   - `manifest.json` - Component metadata
+   - `WidgetName.ts` (Web Widget) or `WidgetName.tsx` (React)
+   - `manifest.json` - Widget metadata
    - `cdn.ts` or `cdn.tsx` - CDN entry point
    - `index.ts` - Library export
-3. Export from `src/components/index.ts`
+3. Export from `src/widgets/index.ts`
 4. Run `pnpm build` to generate bundles
 
 ## Forking & Custom Collections
 
 This repository is designed to be forked! You have two options:
 
-### Option 1: Private Component Collection
+### Option 1: Private Widget Collection
 
-Fork this repo to create your own private component library:
+Fork this repo to create your own private widget library:
 
 1. **Fork** this repository to your GitHub account/organization
-2. **Add your components** following the structure above
+2. **Add your widgets** following the structure above
 3. **Host privately** by publishing to a private npm registry or serving CDN bundles from your own infrastructure
 4. **Use in your MCP tools** by pointing to your private CDN URLs
 
 This is ideal for:
 
-- Proprietary UI components with custom branding
+- Proprietary UI widgets with custom branding
 - Internal tools with sensitive designs
-- Components that integrate with private APIs
+- Widgets that integrate with private APIs
 
 ### Option 2: Contribute Back
 
-We welcome community contributions! If you build a component that could benefit others:
+We welcome community contributions! If you build a widget that could benefit others:
 
 1. **Fork** this repository
-2. **Create your component** following the existing patterns
+2. **Create your widget** following the existing patterns
 3. **Add tests and Storybook stories**
-4. **Submit a Pull Request** with a description of your component
+4. **Submit a Pull Request** with a description of your widget
 
-Good candidates for community components:
+Good candidates for community widgets:
 
 - Generic data visualizations (charts, tables, maps)
 - Common tool response patterns (search results, confirmations)
@@ -223,7 +223,7 @@ pnpm build:cdn
 Then reference your hosted bundles in MCP tool responses:
 
 ```html
-<script src="https://your-cdn.example.com/components/my-component.js"></script>
+<script src="https://your-cdn.example.com/widgets/my-widget.js"></script>
 ```
 
 ## License

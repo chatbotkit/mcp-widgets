@@ -1,7 +1,7 @@
 /**
- * Components Index
+ * Widgets Index
  *
- * Re-export all components for library usage
+ * Re-export all widgets for library usage
  */
 
 // Web Component (no React dependency)

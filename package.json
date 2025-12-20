@@ -1,7 +1,7 @@
 {
-  "name": "@chatbotkit/mcp-ui-components",
+  "name": "mcp-widgets",
   "version": "0.0.1",
-  "description": "UI components for MCP integrations (OpenAI, etc.)",
+  "description": "UI widgets for MCP integrations (OpenAI, etc.)",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,9 +10,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./components/*": {
-      "types": "./dist/components/*/index.d.ts",
-      "import": "./dist/components/*/index.js"
+    "./widgets/*": {
+      "types": "./dist/widgets/*/index.d.ts",
+      "import": "./dist/widgets/*/index.js"
     }
   },
   "files": [
@@ -38,6 +38,7 @@
   },
   "keywords": [
     "mcp",
+    "widgets",
     "openai",
     "chatgpt",
     "ui-components",
@@ -47,7 +48,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chatbotkit/mcp-ui-components.git"
+    "url": "https://github.com/chatbotkit/mcp-widgets.git"
   },
   "peerDependencies": {
     "react": "^18 || ^19",

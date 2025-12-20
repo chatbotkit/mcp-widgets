@@ -1,5 +1,5 @@
 /**
- * Utility functions for MCP UI Components
+ * Utility functions for MCP Widgets
  */
 
 export * from './openai'

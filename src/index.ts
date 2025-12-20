@@ -1,7 +1,7 @@
 /**
- * MCP UI Components
+ * MCP Widgets
  *
- * This package provides UI components for MCP (Model Context Protocol)
+ * This package provides UI widgets for MCP (Model Context Protocol)
  * integrations, particularly for rendering tool outputs in ChatGPT and
  * other AI assistants.
  *
@@ -14,5 +14,5 @@ export * from './utils/index'
 // Re-export types
 export * from './types/index'
 
-// Components are exported individually from their directories
-// e.g., import { MapView } from '@chatbotkit/mcp-ui-components/components/map'
+// Widgets are exported individually from their directories
+// e.g., import { MapView } from 'mcp-widgets/widgets/map'

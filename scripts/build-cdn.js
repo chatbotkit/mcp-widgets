@@ -1,16 +1,16 @@
 /**
  * CDN Build Script
  *
- * This script builds each component in src/components into a self-contained
+ * This script builds each widget in src/widgets into a self-contained
  * IIFE bundle that can be loaded via CDN. Each bundle includes:
- * - The component code (React or Web Component)
- * - React runtime (for React components)
+ * - The widget code (React or Web Component)
+ * - React runtime (for React widgets)
  * - CSS (inlined)
  * - Auto-registration as custom element
  *
  * Output:
- * - cdn/{component-name}.js - The bundled component
- * - cdn/{component-name}.manifest.json - Component metadata (generated from manifest.ts)
+ * - cdn/{widget-name}.js - The bundled widget
+ * - cdn/{widget-name}.manifest.json - Component metadata (generated from manifest.ts)
  */
 
 import * as esbuild from 'esbuild'
@@ -21,9 +21,9 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
-const SRC_DIR = path.join(ROOT, 'src', 'components')
+const SRC_DIR = path.join(ROOT, 'src', 'widgets')
 const CDN_DIR = path.join(ROOT, 'cdn')
-const DIST_DIR = path.join(ROOT, 'dist', 'components')
+const DIST_DIR = path.join(ROOT, 'dist', 'widgets')
 
 /**
  * Plugin to inline CSS as a string and inject it into the document
@@ -52,27 +52,27 @@ const inlineCSSPlugin = {
 }
 
 /**
- * Find all components with manifest.ts files
+ * Find all widgets with manifest.ts files
  */
-async function findComponents() {
+async function findWidgets() {
   // Look for manifest.ts (new) or manifest.json (legacy)
   const tsManifests = await glob('*/manifest.ts', { cwd: SRC_DIR })
   const jsonManifests = await glob('*/manifest.json', { cwd: SRC_DIR })
 
   // Prefer TS manifests, fallback to JSON
-  const components = new Set([
+  const widgets = new Set([
     ...tsManifests.map((f) => path.dirname(f)),
     ...jsonManifests.map((f) => path.dirname(f)),
   ])
 
-  return Array.from(components)
+  return Array.from(widgets)
 }
 
 /**
  * Load and process a TypeScript manifest, converting Zod schema to JSON Schema
  */
-async function loadTsManifest(componentDir, componentName) {
-  const srcManifest = path.join(componentDir, 'manifest.ts')
+async function loadTsManifest(widgetDir, widgetName) {
+  const srcManifest = path.join(widgetDir, 'manifest.ts')
 
   try {
     await fs.access(srcManifest)
@@ -112,7 +112,7 @@ async function loadTsManifest(componentDir, componentName) {
   const manifest = moduleObj.exports.manifest || moduleObj.exports.default
 
   if (!manifest) {
-    console.warn(`⚠️  ${componentName}: manifest.ts has no 'manifest' export`)
+    console.warn(`⚠️  ${widgetName}: manifest.ts has no 'manifest' export`)
     return null
   }
 
@@ -131,8 +131,8 @@ async function loadTsManifest(componentDir, componentName) {
 /**
  * Load a JSON manifest (legacy format)
  */
-async function loadJsonManifest(componentDir) {
-  const manifestPath = path.join(componentDir, 'manifest.json')
+async function loadJsonManifest(widgetDir) {
+  const manifestPath = path.join(widgetDir, 'manifest.json')
   try {
     const content = await fs.readFile(manifestPath, 'utf8')
     return JSON.parse(content)
@@ -141,22 +141,22 @@ async function loadJsonManifest(componentDir) {
   }
 }
 
-async function buildComponent(componentName) {
-  const componentDir = path.join(SRC_DIR, componentName)
-  const outputFile = path.join(CDN_DIR, `${componentName}.js`)
-  const manifestDest = path.join(CDN_DIR, `${componentName}.manifest.json`)
+async function buildComponent(widgetName) {
+  const widgetDir = path.join(SRC_DIR, widgetName)
+  const outputFile = path.join(CDN_DIR, `${widgetName}.js`)
+  const manifestDest = path.join(CDN_DIR, `${widgetName}.manifest.json`)
 
   // Find entry point (prefer .tsx, fallback to .ts)
-  let entryPoint = path.join(componentDir, 'cdn.tsx')
+  let entryPoint = path.join(widgetDir, 'cdn.tsx')
   try {
     await fs.access(entryPoint)
   } catch {
-    entryPoint = path.join(componentDir, 'cdn.ts')
+    entryPoint = path.join(widgetDir, 'cdn.ts')
     try {
       await fs.access(entryPoint)
     } catch {
       console.warn(
-        `⚠️  Skipping ${componentName}: no cdn.tsx or cdn.ts entry point`
+        `⚠️  Skipping ${widgetName}: no cdn.tsx or cdn.ts entry point`
       )
       return
     }
@@ -185,16 +185,16 @@ async function buildComponent(componentName) {
   })
 
   // Try to load TS manifest first, then fall back to JSON
-  let manifestData = await loadTsManifest(componentDir, componentName)
+  let manifestData = await loadTsManifest(widgetDir, widgetName)
   if (!manifestData) {
-    manifestData = await loadJsonManifest(componentDir)
+    manifestData = await loadJsonManifest(widgetDir)
   }
 
   if (manifestData) {
     await fs.writeFile(manifestDest, JSON.stringify(manifestData, null, 2))
-    console.log(`✓ ${componentName} - bundle + manifest`)
+    console.log(`✓ ${widgetName} - bundle + manifest`)
   } else {
-    console.log(`✓ ${componentName} - bundle only (no manifest)`)
+    console.log(`✓ ${widgetName} - bundle only (no manifest)`)
   }
 }
 
@@ -204,19 +204,19 @@ async function main() {
   // Ensure output directory exists
   await fs.mkdir(CDN_DIR, { recursive: true })
 
-  // Find and build all components
-  const components = await findComponents()
+  // Find and build all widgets
+  const widgets = await findWidgets()
 
-  if (components.length === 0) {
-    console.log('No components found with manifest.json')
+  if (widgets.length === 0) {
+    console.log('No widgets found with manifest.json')
     return
   }
 
-  for (const component of components) {
+  for (const widget of widgets) {
     try {
-      await buildComponent(component)
+      await buildComponent(widget)
     } catch (err) {
-      console.error(`✗ ${component} - failed:`, err.message)
+      console.error(`✗ ${widget} - failed:`, err.message)
     }
   }
 
