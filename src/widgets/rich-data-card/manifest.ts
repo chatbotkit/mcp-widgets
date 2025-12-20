@@ -20,7 +20,7 @@ export const sectionSchema = z.object({
  */
 export const propsSchema = z.object({
   /** Title displayed at the top of the card */
-  title: z.string().optional().describe('Card title'),
+  title: z.string().min(8).max(256).optional().describe('Card title'),
 
   /** Description text below the title */
   description: z.string().optional().describe('Subtitle or description text'),
@@ -54,9 +54,6 @@ export const propsSchema = z.object({
     .enum(['success', 'error', 'warning', 'info'])
     .optional()
     .describe('Status indicator that changes card styling'),
-
-  /** Additional CSS class */
-  className: z.string().optional().describe('Additional CSS class name'),
 })
 
 /** Inferred props type from the schema */

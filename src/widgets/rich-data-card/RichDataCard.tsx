@@ -90,7 +90,6 @@ export function RichDataCard({
   sections,
   footer,
   status,
-  className = '',
 }: RichDataCardProps) {
   const statusStyle = status ? STATUS_STYLES[status] : null
 
@@ -102,7 +101,7 @@ export function RichDataCard({
     : undefined
 
   return (
-    <div className={`rdc-card ${className}`.trim()} style={cardStyle}>
+    <div className="rdc-card" style={cardStyle}>
       {/* Header */}
       {(title || icon) && (
         <div className="rdc-header">

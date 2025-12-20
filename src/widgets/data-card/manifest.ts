@@ -10,7 +10,7 @@ import { defineManifest, z } from '../../types/manifest'
  */
 export const propsSchema = z.object({
   /** Optional title displayed at the top of the card */
-  title: z.string().optional().describe('Card title'),
+  title: z.string().min(8).max(256).optional().describe('Card title'),
 
   /** JSON data to display as key-value pairs */
   data: z
