@@ -1,0 +1,53 @@
+{
+  "name": "rich-data-card",
+  "displayName": "Rich Data Card",
+  "description": "An enhanced data card with support for descriptions, sections, and actions. Built with React.",
+  "version": "0.0.1",
+  "tagName": "mcp-rich-data-card",
+  "category": "data-display",
+  "framework": "react",
+  "attributes": [
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "description": "Title displayed at the top of the card"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": false,
+      "description": "Optional description text below the title"
+    },
+    {
+      "name": "data",
+      "type": "string",
+      "required": false,
+      "description": "JSON string of data to display"
+    },
+    {
+      "name": "sections",
+      "type": "string",
+      "required": false,
+      "description": "JSON string of named sections, each with their own data"
+    },
+    {
+      "name": "footer",
+      "type": "string",
+      "required": false,
+      "description": "Optional footer text"
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": false,
+      "description": "Status indicator: 'success' | 'error' | 'warning' | 'info'"
+    },
+    {
+      "name": "icon",
+      "type": "string",
+      "required": false,
+      "description": "Optional icon/emoji to display in the header"
+    }
+  ]
+}

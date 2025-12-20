@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/*
+ * Base styles for MCP UI Components
+ * This file is processed by Tailwind v4 and can be imported by components
+ */
+
+@theme {
+  /* Custom theme tokens can be defined here */
+  --color-mcp-primary: #0066cc;
+  --color-mcp-secondary: #6b7280;
+  --color-mcp-success: #10b981;
+  --color-mcp-warning: #f59e0b;
+  --color-mcp-error: #ef4444;
+}

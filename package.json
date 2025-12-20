@@ -1,0 +1,96 @@
+{
+  "name": "@chatbotkit/mcp-ui-components",
+  "version": "0.0.1",
+  "description": "UI components for MCP integrations (OpenAI, etc.)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components/*": {
+      "types": "./dist/components/*/index.d.ts",
+      "import": "./dist/components/*/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "cdn",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "pnpm run build:types && pnpm run build:esm && pnpm run build:cdn",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build:esm": "tsc -p tsconfig.build.json",
+    "build:cdn": "node scripts/build-cdn.js",
+    "build:css": "npx @tailwindcss/cli -i ./src/styles/base.css -o ./dist/styles.css",
+    "clean": "rimraf dist cdn *.tsbuildinfo",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "dev": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "mcp",
+    "openai",
+    "chatgpt",
+    "ui-components",
+    "web-components",
+    "react"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chatbotkit/mcp-ui-components.git"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@r2wc/react-to-web-component": "^2.0.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-links": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@storybook/test": "^8.4.7",
+    "@tailwindcss/cli": "^4.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "esbuild": "^0.24.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "glob": "^11.0.0",
+    "prettier": "^3.4.2",
+    "react": "^18",
+    "react-dom": "^18",
+    "rimraf": "^5.0.10",
+    "storybook": "^8.4.7",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.6",
+    "vitest": "^2.1.8"
+  }
+}
