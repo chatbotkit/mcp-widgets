@@ -46,6 +46,7 @@ describe('ManifestMetadataSchema', () => {
   })
 
   it('should reject manifest without required name', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { name: _, ...manifest } = validManifest
 
     const result = ManifestMetadataSchema.safeParse(manifest)
